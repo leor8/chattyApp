@@ -39,13 +39,12 @@ class App extends Component {
   }
 
   addNewMessage(message) {
-    const oldMessages = this.state.messages;
-    const newMessages = [...oldMessages, message];
+    const newMessages = this.state.messages.push(message);
+    //const newMessages = [...oldMessages, message];
     this.setState( { messages: newMessages });
   }
 
   render() {
-    console.log(this.state.messages);
     return (
       <div>
         <Header />
