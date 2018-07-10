@@ -2,14 +2,20 @@ import React, {Component} from 'react';
 import generateRandomId from '../randomId.js'
 
 export default class Messages extends Component {
+  constructor(props){
+    super(props);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
 
   handleKeyPress(event) {
-    event.preventDefault();
-
     if(event.key === 'Enter'){
-      let newMessage = {};
-      newMessage.id = generateRandomId;
-      console.log(event.target.value);
+      let messageInput = {};
+      messageInput.id = generateRandomId();
+      messageInput.username = this.props.currentUser;
+      messageInput.content = event.target.value;
+      console.log(messageInput);
+
+      //this.props.addNewMessage(messageInput);
     }
   }
 
@@ -19,7 +25,7 @@ export default class Messages extends Component {
     return (
       <footer className="chatbar">
         <input className="chatbar-username" placeholder="Your Name (Optional)" value={ currName }/>
-        <input className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress={ this.handleKeyPress } />
+        <input className="chatbar-message" placeholder="Type a message and hit ENTER" name="newMessageContent" onKeyPress={ this.handleKeyPress } />
       </footer>
     )
   }

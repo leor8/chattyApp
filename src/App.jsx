@@ -23,6 +23,8 @@ class App extends Component {
         }
       ]
     };
+
+    this.addNewMessage = this.addNewMessage.bind(this);
   }
 
   componentDidMount() {
@@ -43,7 +45,7 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.messages[0].id);
+    console.log(this.state.messages);
     return (
       <div>
         <Header />
