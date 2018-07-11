@@ -25,6 +25,7 @@ class App extends Component {
     };
 
     this.addNewMessage = this.addNewMessage.bind(this);
+    this.updateUserName = this.updateUserName.bind(this);
   }
 
   componentDidMount() {
@@ -39,9 +40,25 @@ class App extends Component {
   }
 
   addNewMessage(message) {
-    const newMessages = this.state.messages.push(message);
-    //const newMessages = [...oldMessages, message];
-    this.setState( { messages: newMessages });
+    // setTimeOut( () => {
+    const oldMessages = this.state.messages;
+    const newMessages = [...oldMessages, message];
+    this.setState( { messages: newMessages } );
+    // }, 3000);
+  }
+
+  updateUserName(oldName, newName) {
+    for(let i = 0; i < this.state.messages.length; i++){
+      console.log(this.state.messages[i].username, oldName);
+      if(this.state.messages[i].username === oldName) {
+        this.state.messages[i].username = newName;
+      }
+    }
+
+    const updatedName = this.state.messages;
+    // console.log(updatedName);
+
+    this.setState( { messages: updatedName } );
   }
 
   render() {
@@ -49,7 +66,7 @@ class App extends Component {
       <div>
         <Header />
         <MessageList messages={ this.state.messages }/>
-        <ChatBar currentUser={ this.state.currentUser.name } addNewMessage={ this.addNewMessage }/>
+        <ChatBar currentUser={ this.state.currentUser.name } addNewMessage={ this.addNewMessage } updateUserName={this.updateUserName}/>
       </div>
     );
   }
