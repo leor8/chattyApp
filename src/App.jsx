@@ -49,7 +49,6 @@ class App extends Component {
 
   updateUserName(oldName, newName) {
     for(let i = 0; i < this.state.messages.length; i++){
-      console.log(this.state.messages[i].username, oldName);
       if(this.state.messages[i].username === oldName) {
         this.state.messages[i].username = newName;
       }

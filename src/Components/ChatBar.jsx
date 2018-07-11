@@ -8,27 +8,34 @@ export default class Messages extends Component {
 
     const handleKeyPress = event => {
 
-      if(event.target.className === 'chatbar-username' && event.key === 'Enter'){
-        this.props.updateUserName(currName, event.target.value);
-        currName = event.target.value;
+      if(event.key === 'Enter'){
+        if(event.target.value === ""){
+          currName = 'Anonymous';
+        } else {
+          currName = event.target.value;
+        }
+        //this.props.updateUserName(currName, event.target.value);
       } else {
 
         if(event.key === 'Enter'){
-          let messageInput = {};
-          messageInput.id = generateRandomId();
-          messageInput.username = currName;
-          messageInput.content = event.target.value;
+          if(event.target.value !== "") {
+            let messageInput = {};
+            messageInput.id = generateRandomId();
+            messageInput.username = currName;
+            messageInput.content = event.target.value;
 
-          event.target.value = "";
+            event.target.value = "";
 
-          this.props.addNewMessage(messageInput);
+            this.props.addNewMessage(messageInput);
+          }
         }
       }
     }
+
     return (
-      <footer className="chatbar">
-        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={ currName } onKeyPress={ handleKeyPress }/>
-        <input className="chatbar-message" placeholder="Type a message and hit ENTER" name="newMessageContent" onKeyPress={ handleKeyPress } />
+      <footer className="chatbar" onKeyPress={ handleKeyPress }>
+        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={ currName } />
+        <input className="chatbar-message" placeholder="Type a message and hit ENTER" name="newMessageContent" />
       </footer>
     )
   }
