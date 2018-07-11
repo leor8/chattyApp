@@ -8,11 +8,11 @@ export default class Messages extends Component {
 
     const handleKeyPress = event => {
 
-      if(event.key === 'Enter'){
+      if(event.target.className === 'chatbar-username' && event.key === 'Enter'){
         if(event.target.value === ""){
-          currName = 'Anonymous';
+          this.props.updateCurrentUser("Anonymous");
         } else {
-          currName = event.target.value;
+          this.props.updateCurrentUser(event.target.value);
         }
         //this.props.updateUserName(currName, event.target.value);
       } else {
@@ -33,9 +33,9 @@ export default class Messages extends Component {
     }
 
     return (
-      <footer className="chatbar" onKeyPress={ handleKeyPress }>
-        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={ currName } />
-        <input className="chatbar-message" placeholder="Type a message and hit ENTER" name="newMessageContent" />
+      <footer className="chatbar">
+        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={ currName } onKeyPress={ handleKeyPress }/>
+        <input className="chatbar-message" placeholder="Type a message and hit ENTER" name="newMessageContent" onKeyPress={ handleKeyPress } />
       </footer>
     )
   }
