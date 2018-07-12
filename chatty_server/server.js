@@ -20,14 +20,20 @@ const wss = new ws.Server({ server });
 // the ws parameter in the callback.
 wss.on('connection', onConnection);
 
-wss.on('close', (ws) => {
-  console.log('Client disconnected');
-});
-
 // Method handling events
+let userOnline = 0;
 function onConnection(client) {
   client.on('message', onMessage)
   console.log('Client connected');
+  userOnline += 1;
+  broadcastMessage(userOnline);
+  console.log(client.on('close', onDisconnection));
+}
+
+function onDisconnection(client){
+  console.log('Client disconnected');
+  userOnline--;
+  broadcastMessage(userOnline);
 }
 
 function onMessage(message) {
@@ -37,10 +43,15 @@ function onMessage(message) {
 }
 
 function broadcastMessage(message){
+  if(message.type === "postMessage"){
+    message.type = "incomingMessage";
+  } else if (message.type === "postNotification"){
+    message.type = "incomingNotification";
+  }
+
   message = JSON.stringify(message);
   for(let eachClient of wss.clients){
     if(eachClient.readyState === ws.OPEN){
-      console.log("New message has been broadcasted");
       eachClient.send(message);
     }
   }

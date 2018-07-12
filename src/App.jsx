@@ -10,10 +10,11 @@ class App extends Component {
 
     this.state = {
       currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
+      userOnline: 0,
       messages: []
     };
 
-    this.client = new WebSocket('ws://localhost:3001');
+    this.client = new WebSocket(`ws://${ window.location.hostname }:3001`);
     this.addNewMessage = this.addNewMessage.bind(this);
     this.updateCurrentUser = this.updateCurrentUser.bind(this);
     this.handleNewMessage = this.handleNewMessage.bind(this);
@@ -30,47 +31,39 @@ class App extends Component {
   }
 
   addNewMessage(message) {
-    // setTimeOut( () => {
-    // const oldMessages = this.state.messages;
-    // const newMessages = [...oldMessages, message];
-    //this.setState( { messages: newMessages } );
-
     this.client.send(JSON.stringify(message));
-
-    // this.client.onmessage(this.handleNewMessage);
-    // }, 3000);
   }
+
+  updateCurrentUser(username) {
+    this.client.send(JSON.stringify(username));
+  }
+
 
   handleNewMessage(event) {
       const message = JSON.parse(event.data);
-      const oldMessages = this.state.messages;
-      const newMessages = [...oldMessages, message];
-      this.setState( { messages: newMessages } );
+
+      if(message.type === "incomingMessage") {
+        const oldMessages = this.state.messages;
+        const newMessages = [...oldMessages, message];
+        this.setState( { messages: newMessages } );
+      } else if (message.type === "incomingNotification") {
+        const currUser = { name: message.name };
+        this.setState( { currentUser: currUser } );
+        const oldMessages = this.state.messages;
+        const newMessages = [...oldMessages, message];
+        this.setState( { currentUser: currUser } );
+        this.setState( { messages: newMessages } );
+      } else {
+        this.setState( { userOnline: message } );
+      }
   }
 
-  // updateUserName(oldName, newName) {
-  //   for(let i = 0; i < this.state.messages.length; i++){
-  //     if(this.state.messages[i].username === oldName) {
-  //       this.state.messages[i].username = newName;
-  //     }
-  //   }
-
-  //   const updatedName = this.state.messages;
-  //   // console.log(updatedName);
-
-  //   this.setState( { messages: updatedName } );
-  // }
-
-  updateCurrentUser(username) {
-    const updatedCurrUser = {name: username}
-    this.setState( {currentUser: updatedCurrUser} );
-  }
 
   render() {
     return (
       <div>
-        <Header />
-        <MessageList messages={ this.state.messages }/>
+        <Header userOnline={ this.state.userOnline }/>
+        <MessageList messages={ this.state.messages } currUser={ this.state.currentUser.name }/>
         <ChatBar currentUser={ this.state.currentUser.name } addNewMessage={ this.addNewMessage } updateCurrentUser={ this.updateCurrentUser }/>
       </div>
     );

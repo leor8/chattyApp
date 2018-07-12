@@ -7,19 +7,28 @@ export default class Messages extends Component {
     let currName = this.props.currentUser ? this.props.currentUser : 'Anonymous';
 
     const handleKeyPress = event => {
-
+      let messageInput = {};
       if(event.target.className === 'chatbar-username' && event.key === 'Enter'){
         if(event.target.value === ""){
-          this.props.updateCurrentUser("Anonymous");
+          messageInput.type = "postNotification";
+          messageInput.content = `${ currName } has changed their username to Anonymous`;
+          messageInput.name = "Anonymous"
+          messageInput.id = generateRandomId();
+          this.props.updateCurrentUser(messageInput);
         } else {
-          this.props.updateCurrentUser(event.target.value);
+          messageInput.type = "postNotification";
+          messageInput.content = `${ currName } has changed their username to ${ event.target.value }`;
+          messageInput.name = event.target.value;
+          messageInput.id = generateRandomId();
+          this.props.updateCurrentUser(messageInput);
         }
         //this.props.updateUserName(currName, event.target.value);
       } else {
 
         if(event.key === 'Enter'){
           if(event.target.value !== "") {
-            let messageInput = {};
+            // let messageInput = {};
+            messageInput.type = "postMessage";
             messageInput.id = generateRandomId();
             messageInput.username = currName;
             messageInput.content = event.target.value;

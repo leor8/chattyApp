@@ -1,20 +1,22 @@
 import React, {Component} from 'react';
 import Messages from './Messages.jsx';
+import SystemMessage from './SystemMessage.jsx'
 
 export default class MessageList extends Component {
 
   render() {
 
     const loadMessages = this.props.messages.map((eachMsg) => {
-      return <Messages user={ eachMsg.username } content={ eachMsg.content } key={ eachMsg.id }/>;
+      if(eachMsg.type === "incomingMessage") {
+        return <Messages user={ eachMsg.username } content={ eachMsg.content } key={ eachMsg.id }/>;
+      } else {
+        return <SystemMessage notification={ eachMsg.content } key={ eachMsg.id }/>
+      }
     });
 
     return (
       <main className="messages">
         { loadMessages }
-        <div className="message system">
-          Anonymous1 changed their name to nomnom.
-        </div>
       </main>
     )
   }
