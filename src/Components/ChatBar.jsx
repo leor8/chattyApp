@@ -12,7 +12,7 @@ export default class Messages extends Component {
         if(event.target.value === ""){
           messageInput.type = "postNotification";
           messageInput.content = `${ currName } has changed their username to Anonymous`;
-          messageInput.name = "Anonymous"
+          messageInput.name = "Anonymous";
           messageInput.id = generateRandomId();
           this.props.updateCurrentUser(messageInput);
         } else {
