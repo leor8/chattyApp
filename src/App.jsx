@@ -14,6 +14,7 @@ class App extends Component {
       messages: []
     };
 
+    this.colour = "";
     this.client = new WebSocket(`ws://${ window.location.hostname }:3001`);
     this.addNewMessage = this.addNewMessage.bind(this);
     this.updateCurrentUser = this.updateCurrentUser.bind(this);
@@ -35,27 +36,45 @@ class App extends Component {
   }
 
   updateCurrentUser(username) {
+    const currUser = { name: username.name };
+    this.setState( { currentUser: currUser } );
     this.client.send(JSON.stringify(username));
   }
 
 
   handleNewMessage(event) {
-      const message = JSON.parse(event.data);
-
-      if(message.type === "incomingMessage") {
-        const oldMessages = this.state.messages;
-        const newMessages = [...oldMessages, message];
-        this.setState( { messages: newMessages } );
-      } else if (message.type === "incomingNotification") {
-        const currUser = { name: message.name };
-        this.setState( { currentUser: currUser } );
-        const oldMessages = this.state.messages;
-        const newMessages = [...oldMessages, message];
-        this.setState( { currentUser: currUser } );
-        this.setState( { messages: newMessages } );
+    const message = JSON.parse(event.data);
+    console.log(message);
+    if(message.type === "incomingMessage") {
+      const oldMessages = this.state.messages;
+      const newMessages = [...oldMessages, message];
+      this.setState( { messages: newMessages } );
+    } else if (message.type === "incomingNotification") {
+      // const currUser = { name: message.name };
+      // this.setState( { currentUser: currUser } );
+      const oldMessages = this.state.messages;
+      const newMessages = [...oldMessages, message];
+      this.setState( { messages: newMessages } );
+    } else if (typeof message === 'number'){
+      console.log(message);
+      this.setState( { userOnline: message } );
+    } else {
+      if(message === 'A'){
+        this.colour = 'red';
+      } else if (message === 'B'){
+        this.colour = 'blue';
+      } else if (message === 'C'){
+        this.colour = 'yellow';
+      } else if (message === 'D'){
+        this.colour = 'green';
+      } else if (message === 'E'){
+        this.colour = 'purple';
+      } else if (message === 'F'){
+        this.colour = 'pink';
       } else {
-        this.setState( { userOnline: message } );
+        this.colour = 'black';
       }
+    }
   }
 
 
@@ -63,7 +82,7 @@ class App extends Component {
     return (
       <div>
         <Header userOnline={ this.state.userOnline }/>
-        <MessageList messages={ this.state.messages } currUser={ this.state.currentUser.name }/>
+        <MessageList messages={ this.state.messages } currUser={ this.state.currentUser.name } colour={ this.colour }/>
         <ChatBar currentUser={ this.state.currentUser.name } addNewMessage={ this.addNewMessage } updateCurrentUser={ this.updateCurrentUser }/>
       </div>
     );

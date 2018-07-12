@@ -5,10 +5,9 @@ import SystemMessage from './SystemMessage.jsx'
 export default class MessageList extends Component {
 
   render() {
-
     const loadMessages = this.props.messages.map((eachMsg) => {
       if(eachMsg.type === "incomingMessage") {
-        return <Messages user={ eachMsg.username } content={ eachMsg.content } key={ eachMsg.id }/>;
+        return <Messages user={ eachMsg.username } content={ eachMsg.content } colour={ this.props.colour } key={ eachMsg.id }/>;
       } else {
         return <SystemMessage notification={ eachMsg.content } key={ eachMsg.id }/>
       }

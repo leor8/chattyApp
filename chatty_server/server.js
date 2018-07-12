@@ -22,12 +22,24 @@ wss.on('connection', onConnection);
 
 // Method handling events
 let userOnline = 0;
+
+function colourIdRand() {
+  var text = "";
+  var possible = "ABCDEFG";
+
+  for (var i = 0; i < 1; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return JSON.stringify(text);
+}
+
 function onConnection(client) {
+  console.log("imhere");
   client.on('message', onMessage)
-  console.log('Client connected');
   userOnline += 1;
   broadcastMessage(userOnline);
-  console.log(client.on('close', onDisconnection));
+  client.send(colourIdRand());
+  client.on('close', onDisconnection);
 }
 
 function onDisconnection(client){
@@ -52,6 +64,7 @@ function broadcastMessage(message){
   message = JSON.stringify(message);
   for(let eachClient of wss.clients){
     if(eachClient.readyState === ws.OPEN){
+      console.log(message);
       eachClient.send(message);
     }
   }
