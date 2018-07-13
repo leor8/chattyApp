@@ -4,7 +4,25 @@ import generateRandomId from '../randomId.js'
 export default class Messages extends Component {
 
   render() {
+
     let currName = this.props.currentUser ? this.props.currentUser : 'Anonymous';
+
+    const onBlurEvent = event => {
+      let messageInput = {};
+      if(event.target.value === ""){
+          messageInput.type = "postNotification";
+          messageInput.content = `${ currName } has changed their username to Anonymous`;
+          messageInput.name = "Anonymous";
+          messageInput.id = generateRandomId();
+          this.props.updateCurrentUser(messageInput);
+        } else {
+          messageInput.type = "postNotification";
+          messageInput.content = `${ currName } has changed their username to ${ event.target.value }`;
+          messageInput.name = event.target.value;
+          messageInput.id = generateRandomId();
+          this.props.updateCurrentUser(messageInput);
+        }
+    }
 
     const handleKeyPress = event => {
       let messageInput = {};
@@ -43,7 +61,7 @@ export default class Messages extends Component {
 
     return (
       <footer className="chatbar">
-        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={ currName } onKeyPress={ handleKeyPress }/>
+        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={ currName } onKeyPress={ handleKeyPress } onBlurCapture={ onBlurEvent } />
         <input className="chatbar-message" placeholder="Type a message and hit ENTER" name="newMessageContent" onKeyPress={ handleKeyPress } />
       </footer>
     )

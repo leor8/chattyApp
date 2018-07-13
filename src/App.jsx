@@ -1,6 +1,4 @@
-import React, {
-  Component
-} from 'react';
+import React, {Component} from 'react';
 import MessageList from './Components/MessageList.jsx';
 import Header from './Components/Header.jsx';
 import ChatBar from './Components/ChatBar.jsx';
@@ -11,9 +9,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      currentUser: {
-        name: "Bob"
-      }, // optional. if currentUser is not defined, it means the user is Anonymous
+      currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
       userOnline: 0,
       messages: []
     };
@@ -28,7 +24,7 @@ class App extends Component {
 
   // component did mount will be responsible for checking if connected to the server
   componentDidMount() {
-    this.client.addEventListener('open', this.onConnection);
+   this.client.addEventListener('open', this.onConnection);
   }
 
   // onConnection will greet the user and listen for messages
@@ -44,12 +40,8 @@ class App extends Component {
 
   //When user changes his/her name
   updateCurrentUser(username) {
-    const currUser = {
-      name: username.name
-    };
-    this.setState({
-      currentUser: currUser
-    });
+    const currUser = { name: username.name };
+    this.setState( { currentUser: currUser } );
     this.client.send(JSON.stringify(username));
   }
 
@@ -57,37 +49,31 @@ class App extends Component {
   handleNewMessage(event) {
     const message = JSON.parse(event.data);
     console.log(message);
-    if (message.type === "incomingMessage") {
+    if(message.type === "incomingMessage") {
       const oldMessages = this.state.messages;
       const newMessages = [...oldMessages, message];
-      this.setState({
-        messages: newMessages
-      });
+      this.setState( { messages: newMessages } );
     } else if (message.type === "incomingNotification") {
       // const currUser = { name: message.name };
       // this.setState( { currentUser: currUser } );
       const oldMessages = this.state.messages;
       const newMessages = [...oldMessages, message];
-      this.setState({
-        messages: newMessages
-      });
-    } else if (typeof message === 'number') {
+      this.setState( { messages: newMessages } );
+    } else if (typeof message === 'number'){
       console.log(message);
-      this.setState({
-        userOnline: message
-      });
+      this.setState( { userOnline: message } );
     } else {
-      if (message === 'A') {
+      if(message === 'A'){
         this.colour = 'red';
-      } else if (message === 'B') {
+      } else if (message === 'B'){
         this.colour = 'blue';
-      } else if (message === 'C') {
+      } else if (message === 'C'){
         this.colour = 'yellow';
-      } else if (message === 'D') {
+      } else if (message === 'D'){
         this.colour = 'green';
-      } else if (message === 'E') {
+      } else if (message === 'E'){
         this.colour = 'purple';
-      } else if (message === 'F') {
+      } else if (message === 'F'){
         this.colour = 'pink';
       } else {
         this.colour = 'black';
@@ -97,34 +83,12 @@ class App extends Component {
 
 
   render() {
-    return ( <
-      div >
-      <
-      Header userOnline = {
-        this.state.userOnline
-      }
-      /> <
-      MessageList messages = {
-        this.state.messages
-      }
-      currUser = {
-        this.state.currentUser.name
-      }
-      colour = {
-        this.colour
-      }
-      /> <
-      ChatBar currentUser = {
-        this.state.currentUser.name
-      }
-      addNewMessage = {
-        this.addNewMessage
-      }
-      updateCurrentUser = {
-        this.updateCurrentUser
-      }
-      /> <
-      /div>
+    return (
+      <div>
+        <Header userOnline={ this.state.userOnline }/>
+        <MessageList messages={ this.state.messages } currUser={ this.state.currentUser.name } colour={ this.colour }/>
+        <ChatBar currentUser={ this.state.currentUser.name } addNewMessage={ this.addNewMessage } updateCurrentUser={ this.updateCurrentUser }/>
+      </div>
     );
   }
 }
