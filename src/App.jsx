@@ -80,7 +80,7 @@ class App extends Component {
     return text;
   }
 
-
+  // Assigning random colour;
   assignColour(message) {
     if(message === 'A'){
       return'red';
