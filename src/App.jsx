@@ -48,6 +48,8 @@ class App extends Component {
 
   //When user changes his/her name
   updateCurrentUser(username) {
+    const currUser = { name: username.name, colour: username.colour};
+    this.setState( { currentUser: currUser } );
     this.client.send(JSON.stringify(username));
   }
 
@@ -60,8 +62,6 @@ class App extends Component {
       this.colour = message.colour;
       this.setState( { messages: newMessages } );
     } else if (message.type === "incomingNotification") {
-      // const currUser = { name: message.name };
-      // this.setState( { currentUser: currUser } );
       const oldMessages = this.state.messages;
       const newMessages = [...oldMessages, message];
       this.setState( { messages: newMessages } );
@@ -101,8 +101,6 @@ class App extends Component {
 
 
   render() {
-    // console.log("currentUser colour is: ", this.state.currentUser.colour);
-    // console.log("other user colour is: ", this.colour);
     return (
       <div>
         <Header userOnline={ this.state.userOnline }/>

@@ -2,6 +2,8 @@
 const express = require('express');
 const ws = require('ws');
 
+const uuidv4 = require('uuid/v4');
+
 // Set the port to 3001
 const PORT = 3001;
 
@@ -29,6 +31,15 @@ function onConnection(client) {
   client.on('message', onMessage);
   userOnline += 1;
   broadcastMessage(userOnline);
+
+  const newUser = {
+    type: "incomingNotification",
+    content: "Anonymous has joined the chat room",
+    name: "Anonymous",
+    id: uuidv4()
+  }
+
+  broadcastMessage(newUser);
   client.on('close', onDisconnection);
 }
 
