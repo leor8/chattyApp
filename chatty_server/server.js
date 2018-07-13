@@ -24,22 +24,11 @@ wss.on('connection', onConnection);
 // Method handling events
 let userOnline = 0;
 
-function colourIdRand() {
-  var text = "";
-  var possible = "ABCDEFG";
-
-  for (var i = 0; i < 1; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  return JSON.stringify(text);
-}
-
 // Check for new messages and update counter
 function onConnection(client) {
   client.on('message', onMessage);
   userOnline += 1;
   broadcastMessage(userOnline);
-  client.send(colourIdRand());
   client.on('close', onDisconnection);
 }
 
@@ -51,7 +40,6 @@ function onDisconnection(client) {
 
 function onMessage(message) {
   const newMessage = JSON.parse(message);
-  console.log(`User ${ newMessage.username } said ${ newMessage.content }`);
   broadcastMessage(newMessage);
 }
 
@@ -65,7 +53,6 @@ function broadcastMessage(message) {
   message = JSON.stringify(message);
   for (let eachClient of wss.clients) {
     if (eachClient.readyState === ws.OPEN) {
-      console.log(message);
       eachClient.send(message);
     }
   }

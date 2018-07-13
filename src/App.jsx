@@ -9,7 +9,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
+      currentUser: {name: "", colour: ""}, // optional. if currentUser is not defined, it means the user is Anonymous
       userOnline: 0,
       messages: []
     };
@@ -20,6 +20,8 @@ class App extends Component {
     this.updateCurrentUser = this.updateCurrentUser.bind(this);
     this.handleNewMessage = this.handleNewMessage.bind(this);
     this.onConnection = this.onConnection.bind(this);
+    this.assignColour = this.assignColour.bind(this);
+    this.colourIdRand = this.colourIdRand.bind(this);
   }
 
   // component did mount will be responsible for checking if connected to the server
@@ -29,29 +31,33 @@ class App extends Component {
 
   // onConnection will greet the user and listen for messages
   onConnection(event) {
-    console.log(`Greetings! User.`);
+    const newUser = {
+      name: "",
+      colour: this.assignColour(this.colourIdRand())
+    };
+    this.setState( {currentUser: newUser} );
     this.client.addEventListener('message', this.handleNewMessage);
   }
 
   // When user enters a message
   addNewMessage(message) {
+    const currUser = { name: message.name, colour: message.colour};
+    this.setState( { currentUser: currUser } );
     this.client.send(JSON.stringify(message));
   }
 
   //When user changes his/her name
   updateCurrentUser(username) {
-    const currUser = { name: username.name };
-    this.setState( { currentUser: currUser } );
     this.client.send(JSON.stringify(username));
   }
 
   // Handle all the messages coming in, based on the tyoe of the message and behave differently
   handleNewMessage(event) {
     const message = JSON.parse(event.data);
-    console.log(message);
     if(message.type === "incomingMessage") {
       const oldMessages = this.state.messages;
       const newMessages = [...oldMessages, message];
+      this.colour = message.colour;
       this.setState( { messages: newMessages } );
     } else if (message.type === "incomingNotification") {
       // const currUser = { name: message.name };
@@ -60,34 +66,48 @@ class App extends Component {
       const newMessages = [...oldMessages, message];
       this.setState( { messages: newMessages } );
     } else if (typeof message === 'number'){
-      console.log(message);
       this.setState( { userOnline: message } );
+    }
+  }
+
+  colourIdRand() {
+    var text = '';
+    var possible = 'ABCDEFG';
+
+    for (var i = 0; i < 1; i++)
+      text = possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+  }
+
+
+  assignColour(message) {
+    if(message === 'A'){
+      return'red';
+    } else if (message === 'B'){
+      return 'blue';
+    } else if (message === 'C'){
+      return 'red';
+    } else if (message === 'D'){
+      return 'gray';
+    } else if (message === 'E'){
+      return 'purple';
+    } else if (message === 'F'){
+      return 'green';
     } else {
-      if(message === 'A'){
-        this.colour = 'red';
-      } else if (message === 'B'){
-        this.colour = 'blue';
-      } else if (message === 'C'){
-        this.colour = 'yellow';
-      } else if (message === 'D'){
-        this.colour = 'green';
-      } else if (message === 'E'){
-        this.colour = 'purple';
-      } else if (message === 'F'){
-        this.colour = 'pink';
-      } else {
-        this.colour = 'black';
-      }
+      return 'black';
     }
   }
 
 
   render() {
+    // console.log("currentUser colour is: ", this.state.currentUser.colour);
+    // console.log("other user colour is: ", this.colour);
     return (
       <div>
         <Header userOnline={ this.state.userOnline }/>
-        <MessageList messages={ this.state.messages } currUser={ this.state.currentUser.name } colour={ this.colour }/>
-        <ChatBar currentUser={ this.state.currentUser.name } addNewMessage={ this.addNewMessage } updateCurrentUser={ this.updateCurrentUser }/>
+        <MessageList messages={ this.state.messages } currentUser={ this.state.currentUser } colour={this.colour}/>
+        <ChatBar currentUser={ this.state.currentUser } addNewMessage={ this.addNewMessage } updateCurrentUser={ this.updateCurrentUser }/>
       </div>
     );
   }
